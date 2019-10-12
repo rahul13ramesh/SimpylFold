@@ -362,28 +362,28 @@ endfunction
 " Compute foldtext by obtaining the first line of the docstring for
 " the folded class or function, if any exists
 function! SimpylFold#FoldText() abort
-    let lnum = v:foldstart
-    let line = getline(lnum)
-    let string_match = matchlist(line, s:docstring_re)
-    " Docstring folds
-    if !empty(string_match)
-        let docstring = substitute(line, s:docstring_re, '', '')
-        if docstring !~# s:blank_re
-            return ''
-        endif
-        let docstring = getline(nextnonblank(lnum + 1))
-    " Definition folds
-    else
-        let lnum = nextnonblank(lnum + 1)
-        let line = getline(lnum)
-        let string_match = matchlist(line, s:docstring_re)
-        if empty(string_match)
-            return ''
-        endif
-        let docstring = substitute(line, s:docstring_re, '', '')
-        if docstring =~# s:blank_re
-            let docstring = getline(nextnonblank(lnum + 1))
-        endif
-    endif
-    return ' ' . substitute(docstring, '^\s*\|\s*$\|' . string_match[1] . '\s*$', '', 'g')
+	" let lnum = v:foldstart
+	" let line = getline(lnum)
+	" let string_match = matchlist(line, s:docstring_re)
+	" " Docstring folds
+	" if empty(string_match)
+		" let docstring = substitute(line, s:docstring_re, '', '')
+		" if docstring !~# s:blank_re
+			" return ''
+		" endif
+		" let docstring = getline(nextnonblank(lnum + 1))
+		" return ' ' . substitute(docstring, '^\s*\|\s*$\|' . string_match[1] . '\s*$', '', 'g')
+
+	let s:middot='·'
+	let s:raquo='»'
+	let s:small_l='ℓ'
+
+	let line = ' ' . substitute(getline(v:foldstart), '^\s*"\?\s*\|\s*"\?\s*{{' . '{\d*\s*', '', 'g') . ' '
+	let lines_count = v:foldend - v:foldstart + 1
+	let lines_count_text = '[' . printf("%4s", lines_count . s:small_l) . ']'
+	let foldchar = matchstr(s:middot, 'fold:\zs.')
+	let foldtextstart = strpart(s:raquo . repeat(" ", v:foldlevel*2) . line, 0, (60*2)/3)
+	let foldtextend = lines_count_text . repeat(" ", 8)
+	let foldtextlength = strlen(substitute(foldtextstart . foldtextend, '.', 'x', 'g')) + &foldcolumn
+	return foldtextstart . repeat(s:middot, 60-foldtextlength) . foldtextend . repeat(" ", 1000)
 endfunction

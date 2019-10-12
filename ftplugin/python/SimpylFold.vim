@@ -12,5 +12,5 @@ augroup SimpylFold
 augroup END
 
 if exists('g:SimpylFold_docstring_preview') && g:SimpylFold_docstring_preview
-    setlocal foldtext=foldtext()\ .\ SimpylFold#FoldText()
+    setlocal foldtext=SimpylFold#FoldText()
 endif
